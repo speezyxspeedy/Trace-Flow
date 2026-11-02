@@ -1,0 +1,75 @@
+{
+  "trace_id": "4bfb104920e0f97a593d6326c281ad8b",
+  "resource": {
+    "service.name": "api-gateway",
+    "deployment.environment": "production",
+    "host.name": "gw-pod-9f4a1"
+  },
+  "spans": [
+    {
+      "span_id": "00f067aa0ba902b7",
+      "parent_span_id": null,
+      "service_name": "api-gateway",
+      "operation_name": "HTTP POST /api/v1/checkout",
+      "start_time": "2026-11-02T12:00:00.000Z",
+      "end_time": "2026-11-02T12:00:00.342Z",
+      "duration": 342.0,
+      "status": "OK",
+      "attributes": {
+        "http.method": "POST",
+        "http.url": "https://api.traceflow.io/api/v1/checkout",
+        "http.status_code": 200,
+        "user.id": "usr_998124"
+      },
+      "events": []
+    },
+    {
+      "span_id": "5fb3f0ca88b00e2c",
+      "parent_span_id": "00f067aa0ba902b7",
+      "service_name": "auth-service",
+      "operation_name": "RPC Auth.ValidateSession",
+      "start_time": "2026-11-02T12:00:00.025Z",
+      "end_time": "2026-11-02T12:00:00.063Z",
+      "duration": 38.0,
+      "status": "OK",
+      "attributes": { "rpc.service": "Auth" },
+      "events": []
+    },
+    {
+      "span_id": "9a12c4e6107bbd18",
+      "parent_span_id": "00f067aa0ba902b7",
+      "service_name": "order-service",
+      "operation_name": "CreateOrderCommand",
+      "start_time": "2026-11-02T12:00:00.070Z",
+      "end_time": "2026-11-02T12:00:00.320Z",
+      "duration": 250.0,
+      "status": "OK",
+      "attributes": { "order.id": "ord_8829103" },
+      "events": []
+    },
+    {
+      "span_id": "3e9b110fa942c7de",
+      "parent_span_id": "9a12c4e6107bbd18",
+      "service_name": "payment-service",
+      "operation_name": "POST /v1/charges/authorize",
+      "start_time": "2026-11-02T12:00:00.140Z",
+      "end_time": "2026-11-02T12:00:00.275Z",
+      "duration": 135.0,
+      "status": "OK",
+      "attributes": { "payment.provider": "Stripe" },
+      "events": []
+    },
+    {
+      "span_id": "a4f89d3320c15e8b",
+      "parent_span_id": "9a12c4e6107bbd18",
+      "service_name": "postgres-db",
+      "operation_name": "INSERT INTO orders",
+      "start_time": "2026-11-02T12:00:00.280Z",
+      "end_time": "2026-11-02T12:00:00.315Z",
+      "duration": 35.0,
+      "status": "OK",
+      "attributes": { "db.system": "postgresql" },
+      "events": []
+    }
+  ]
+}

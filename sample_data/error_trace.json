@@ -1,0 +1,152 @@
+{
+  "trace_id": "7c8e920d3f8a4b2c110294827103ab55",
+  "resource": {
+    "service.name": "api-gateway",
+    "deployment.environment": "production"
+  },
+  "spans": [
+    {
+      "span_id": "881a2f9011de30aa",
+      "parent_span_id": null,
+      "service_name": "api-gateway",
+      "operation_name": "HTTP POST /api/v1/checkout",
+      "start_time": "2026-11-02T12:05:10.000Z",
+      "end_time": "2026-11-02T12:05:15.020Z",
+      "duration": 5020.0,
+      "status": "ERROR",
+      "status_message": "Gateway Timeout: Downstream order service failed to respond within 5000ms",
+      "attributes": {
+        "http.method": "POST",
+        "http.url": "https://api.traceflow.io/api/v1/checkout",
+        "http.status_code": 504,
+        "http.client_ip": "203.0.113.19",
+        "user.id": "usr_771920",
+        "error": true,
+        "error.type": "GatewayTimeoutException"
+      },
+      "events": [
+        {
+          "name": "gateway_timeout",
+          "timestamp": "2026-11-02T12:05:15.010Z",
+          "attributes": {
+            "timeout_threshold_ms": 5000,
+            "target": "order-service"
+          }
+        }
+      ]
+    },
+    {
+      "span_id": "90aa81f2113cb77a",
+      "parent_span_id": "881a2f9011de30aa",
+      "service_name": "auth-service",
+      "operation_name": "RPC Auth.ValidateSession",
+      "start_time": "2026-11-02T12:05:10.015Z",
+      "end_time": "2026-11-02T12:05:10.045Z",
+      "duration": 30.0,
+      "status": "OK",
+      "attributes": {
+        "rpc.service": "Auth",
+        "user.role": "member"
+      },
+      "events": []
+    },
+    {
+      "span_id": "bf89a10238120cc9",
+      "parent_span_id": "881a2f9011de30aa",
+      "service_name": "order-service",
+      "operation_name": "CreateOrderCommand",
+      "start_time": "2026-11-02T12:05:10.050Z",
+      "end_time": "2026-11-02T12:05:15.015Z",
+      "duration": 4965.0,
+      "status": "ERROR",
+      "status_message": "PaymentProcessingTimeout: Payment provider gateway unreachable after 3 retries",
+      "attributes": {
+        "order.id": "ord_9901842",
+        "order.amount": 899.00,
+        "error": true,
+        "error.type": "PaymentProcessingTimeout",
+        "error.message": "Payment provider gateway unreachable after 3 retries"
+      },
+      "events": [
+        {
+          "name": "exception",
+          "timestamp": "2026-11-02T12:05:15.012Z",
+          "attributes": {
+            "exception.type": "ConnectTimeoutError",
+            "exception.message": "Connection to api.stripe.com timed out after 3000ms",
+            "exception.stacktrace": "File \"/app/payment/client.py\", line 84, in execute_charge\n    raise ConnectTimeoutError(\"Connection to api.stripe.com timed out\")"
+          }
+        }
+      ]
+    },
+    {
+      "span_id": "45cd91a2718ef001",
+      "parent_span_id": "bf89a10238120cc9",
+      "service_name": "inventory-service",
+      "operation_name": "ReserveStockBatch",
+      "start_time": "2026-11-02T12:05:10.060Z",
+      "end_time": "2026-11-02T12:05:10.110Z",
+      "duration": 50.0,
+      "status": "OK",
+      "attributes": {
+        "inventory.skus": "SKU-PREMIUM-01",
+        "lock.acquired": true
+      },
+      "events": []
+    },
+    {
+      "span_id": "fe10928cb4a21190",
+      "parent_span_id": "bf89a10238120cc9",
+      "service_name": "payment-service",
+      "operation_name": "POST /v1/charges/authorize",
+      "start_time": "2026-11-02T12:05:10.120Z",
+      "end_time": "2026-11-02T12:05:15.000Z",
+      "duration": 4880.0,
+      "status": "ERROR",
+      "status_message": "UpstreamGatewayTimeout: Stripe API endpoint did not respond",
+      "attributes": {
+        "payment.provider": "Stripe",
+        "payment.attempt": 3,
+        "http.status_code": 504,
+        "error": true,
+        "error.type": "UpstreamGatewayTimeout",
+        "error.message": "HTTP 504 Gateway Timeout from payment provider"
+      },
+      "events": [
+        {
+          "name": "retry_attempt_1",
+          "timestamp": "2026-11-02T12:05:11.500Z",
+          "attributes": { "backoff_ms": 1000 }
+        },
+        {
+          "name": "retry_attempt_2",
+          "timestamp": "2026-11-02T12:05:13.200Z",
+          "attributes": { "backoff_ms": 2000 }
+        },
+        {
+          "name": "exception",
+          "timestamp": "2026-11-02T12:05:14.990Z",
+          "attributes": {
+            "exception.type": "SocketTimeoutException",
+            "exception.message": "Read timed out after 3000ms"
+          }
+        }
+      ]
+    },
+    {
+      "span_id": "119028cb4a21190a",
+      "parent_span_id": "bf89a10238120cc9",
+      "service_name": "inventory-service",
+      "operation_name": "RollbackStockReservation",
+      "start_time": "2026-11-02T12:05:15.002Z",
+      "end_time": "2026-11-02T12:05:15.014Z",
+      "duration": 12.0,
+      "status": "OK",
+      "attributes": {
+        "compensation.reason": "Payment failed",
+        "inventory.skus": "SKU-PREMIUM-01"
+      },
+      "events": []
+    }
+  ]
+}

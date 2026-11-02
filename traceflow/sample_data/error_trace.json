@@ -1,0 +1,52 @@
+{
+  "trace_id": "7c8e920d3f8a4b2c110294827103ab55",
+  "spans": [
+    {
+      "span_id": "881a2f9011de30aa",
+      "parent_span_id": null,
+      "service_name": "api-gateway",
+      "operation_name": "HTTP POST /api/v1/checkout",
+      "start_time": "2026-11-02T12:05:10.000Z",
+      "end_time": "2026-11-02T12:05:15.020Z",
+      "duration": 5020.0,
+      "status": "ERROR",
+      "status_message": "Gateway Timeout: Downstream order service failed to respond within 5000ms",
+      "attributes": {
+        "http.method": "POST",
+        "http.status_code": 504,
+        "error": true
+      },
+      "events": []
+    },
+    {
+      "span_id": "bf89a10238120cc9",
+      "parent_span_id": "881a2f9011de30aa",
+      "service_name": "order-service",
+      "operation_name": "CreateOrderCommand",
+      "start_time": "2026-11-02T12:05:10.050Z",
+      "end_time": "2026-11-02T12:05:15.015Z",
+      "duration": 4965.0,
+      "status": "ERROR",
+      "status_message": "PaymentProcessingTimeout: Payment provider gateway unreachable after 3 retries",
+      "attributes": { "error": true },
+      "events": []
+    },
+    {
+      "span_id": "fe10928cb4a21190",
+      "parent_span_id": "bf89a10238120cc9",
+      "service_name": "payment-service",
+      "operation_name": "POST /v1/charges/authorize",
+      "start_time": "2026-11-02T12:05:10.120Z",
+      "end_time": "2026-11-02T12:05:15.000Z",
+      "duration": 4880.0,
+      "status": "ERROR",
+      "status_message": "UpstreamGatewayTimeout: Stripe API endpoint did not respond",
+      "attributes": {
+        "payment.provider": "Stripe",
+        "http.status_code": 504,
+        "error": true
+      },
+      "events": []
+    }
+  ]
+}
